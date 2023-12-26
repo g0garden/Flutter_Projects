@@ -58,6 +58,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         ]));
   }
 
+  //뒤로 3초
   void onReversePressed() {
     final currentPosition = videoController!.value.position;
 
@@ -71,7 +72,21 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     videoController!.seekTo(position);
   }
 
-  void onForwardPressed() {}
+  //앞으로 3초
+  void onForwardPressed() {
+    final maxPositioin = videoController!.value.duration;
+    final currentPosition = videoController!.value.position;
+
+    Duration position = maxPositioin;
+
+    //재생시간이 3초 이상 남아있어야 3초 앞으로 가기 정상동작
+    if ((maxPositioin - Duration(seconds: 3)).inSeconds <
+        currentPosition.inSeconds) {
+      position = currentPosition + Duration(seconds: 3);
+    }
+
+    videoController!.seekTo(position);
+  }
 
   void onPlayPressed() {
     //이미 실행중이면 중지
