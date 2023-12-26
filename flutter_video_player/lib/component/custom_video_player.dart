@@ -14,6 +14,7 @@ class CustomVideoPlayer extends StatefulWidget {
 
 class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   VideoPlayerController? videoController;
+  Duration currentPosition = Duration(); //영상의 현재 재생위치
 
   @override
   void initState() {
@@ -47,14 +48,36 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
               onReversePressed: onReversePressed,
               onForwardPressed: onForwardPressed,
               isPlaying: videoController!.value.isPlaying),
+          _NewVideo(onPressed: onNewVideoPressed),
           Positioned(
+            left: 0,
             right: 0,
-            child: IconButton(
-                onPressed: () {},
-                iconSize: 30.0,
-                color: Colors.white,
-                icon: const Icon(Icons.photo_camera_back)),
-          )
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Text(
+                      '${currentPosition.inMinutes}:${(currentPosition.inSeconds % 60).toString().padLeft(2, '0')}',
+                      style: TextStyle(color: Colors.white)),
+                  Expanded(
+                    child: Slider(
+                        value: currentPosition.inSeconds.toDouble(),
+                        onChanged: (double val) {
+                          setState(() {
+                            currentPosition = Duration(seconds: val.toInt());
+                          });
+                        },
+                        max: videoController!.value.duration.inSeconds
+                            .toDouble()),
+                  ),
+                  Text(
+                      '${videoController!.value.duration.inMinutes}:${(videoController!.value.duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                      style: TextStyle(color: Colors.white)),
+                ],
+              ),
+            ),
+          ),
         ]));
   }
 
@@ -71,6 +94,8 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     videoController!.seekTo(position);
   }
+
+  void onNewVideoPressed() {}
 
   //앞으로 3초
   void onForwardPressed() {
@@ -143,5 +168,21 @@ class _Controls extends StatelessWidget {
         iconSize: 30.0,
         color: Colors.white,
         icon: Icon(iconData));
+  }
+}
+
+class _NewVideo extends StatelessWidget {
+  final VoidCallback onPressed;
+  const _NewVideo({required this.onPressed, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+        right: 0,
+        child: IconButton(
+            onPressed: onPressed,
+            iconSize: 30.0,
+            color: Colors.white,
+            icon: const Icon(Icons.photo_camera_back)));
   }
 }
