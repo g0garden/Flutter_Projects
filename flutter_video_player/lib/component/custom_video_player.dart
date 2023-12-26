@@ -30,6 +30,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     await videoController!.initialize();
 
+    videoController!.addListener(() {
+      final currentPosition = videoController!.value.position;
+
+      setState(() {
+        this.currentPosition = currentPosition;
+      });
+    });
+
     //videocontroller를 실행하고 나서 위젯 한 번 빌드해줘야되니까
     setState(() {});
   }
