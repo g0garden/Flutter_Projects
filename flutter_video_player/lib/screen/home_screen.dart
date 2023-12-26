@@ -20,8 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget renderVideo() {
     return Center(
         child: CustomVideoPlayer(
-      video: video!,
-    ));
+            video: video!, onNewVideoPressed: onNewVideoPressed));
   }
 
   Widget renderEmpty() {
@@ -29,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: MediaQuery.of(context).size.width,
       decoration: getBoxDecoration(),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        _Logo(onTap: onLogoTap),
+        _Logo(onTap: onNewVideoPressed),
         const SizedBox(height: 20),
         _AppName()
       ]),
@@ -37,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 //로그클릭시, video 선택가능하도록
-  void onLogoTap() async {
+  void onNewVideoPressed() async {
     final video = await ImagePicker().pickVideo(
       source: ImageSource.gallery,
     );

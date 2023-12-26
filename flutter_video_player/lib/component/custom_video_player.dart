@@ -6,7 +6,9 @@ import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
   final XFile video;
-  const CustomVideoPlayer({required this.video, super.key});
+  final VoidCallback onNewVideoPressed;
+  const CustomVideoPlayer(
+      {required this.video, required this.onNewVideoPressed, super.key});
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -24,7 +26,19 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
     initVideoController();
   }
 
+  @override
+  void didUpdateWidget(covariant CustomVideoPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    //언제 didupdatewidget이 호출되는지 다시 생각하기
+    if (oldWidget.video.path != widget.video.path) {
+      initVideoController();
+    }
+  }
+
   initVideoController() async {
+    currentPosition = Duration();
+
     videoController = VideoPlayerController.file(
         //XFile -> file
         File(widget.video.path));
@@ -64,7 +78,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                   onReversePressed: onReversePressed,
                   onForwardPressed: onForwardPressed,
                   isPlaying: videoController!.value.isPlaying),
-            if (showControls) _NewVideo(onPressed: onNewVideoPressed),
+            if (showControls) _NewVideo(onPressed: widget.onNewVideoPressed),
             _SliderBottom(
                 currentPosition: currentPosition,
                 maxPosition: videoController!.value.duration,
@@ -92,8 +106,6 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
     videoController!.seekTo(position);
   }
-
-  void onNewVideoPressed() {}
 
   //앞으로 3초
   void onForwardPressed() {
